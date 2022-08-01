@@ -1,0 +1,85 @@
+try {
+    // Change the following X-Path if the JSON is at a different location on the page
+    var data_xpath = '//body';
+
+    //Change this function if your JSON string is somewhere other than in the text-content of the node
+    function get_json_string_from_node(node) {
+        return node.textContent;
+    }
+
+    var parsed_node_id = 'moz_parsed_node';
+    var NodeNotFoundError = class extends Error {
+        constructor(path) {
+            super(`JS path ${path} found no nodes`);
+            this.name = 'NodeNotFound';
+        }
+    }
+    //Table Formatting
+    function parse(object, node) {
+        for (x in object) {
+            var tr = document.createElement("TR");
+            tr.setAttribute("type", typeof object[x]);
+            tr.setAttribute("class", x);
+            var td1 = document.createElement("TD");
+            td1.setAttribute("class", "name");
+            td1.textContent = x;
+            tr.appendChild(td1);
+            node.appendChild(tr);
+            if (typeof object[x] == 'object') {
+                var table = document.createElement("TABLE");
+                var tbody = document.createElement("TBODY");
+                table.appendChild(tbody);
+                table.setAttribute("type", "object");
+                td1.setAttribute("style", "white-space: pre-wrap;");
+                table.setAttribute("class", x);
+
+                parse(object[x], tbody);
+                if (table.getElementsByTagName("tr")[0]) { tr.appendChild(table); }
+                else {
+                    var td2 = document.createElement("TD");
+                    td2.setAttribute("class", "value");
+                    tr.appendChild(td2);
+                }
+            }
+            else {
+                tr.setAttribute("value", object[x]);
+                var td2 = document.createElement("TD");
+                td2.setAttribute("class", "value");
+                td2.innerHTML = object[x];
+                tr.appendChild(td2);
+                node.appendChild(tr);
+            }
+        }
+    }
+
+    var table = document.getElementById(parsed_node_id);
+    if (!table) {
+
+        var data_node = document.evaluate(data_xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        if (data_node) {
+            var json_obj = JSON.parse(get_json_string_from_node(data_node));
+            if (data_xpath == '//body') { document.body.textContent = ""; }
+            document.head.textContent = "";
+            var table = document.createElement("TABLE");
+            var tbody = document.createElement("TBODY");
+            table.id = parsed_node_id;
+            table.appendChild(tbody);
+            parse(json_obj, tbody);
+            document.body.prepend(table);
+            //CSS styling (IE)
+            var css = document.createElement('style');
+            css.setAttribute('type', 'text/css');
+            css.innerHTML = 'tr {border: 0px} .name {width:10%; border: 1px solid rgba(139, 139, 139, .22); padding-right: 5px; padding-left: 5px;} .value {width:90%; border: 1px solid rgba(139, 139, 139, .22); padding-right: 5px; padding-left: 5px;} table {width: 100%;/*background: rgba(139, 139, 139, .22);*/ border: solid rgba(139, 139, 139, .22); border-width: 10px 5px 10px 10px}';
+            document.head.appendChild(css);
+
+        }
+        else {
+            throw new NodeNotFoundError(data_xpath);
+        }
+    }
+}
+catch (e) {
+    console.info(e.name, e.message);
+    console.trace(e);
+}
+

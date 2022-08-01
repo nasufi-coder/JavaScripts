@@ -1,0 +1,12 @@
+var sc = window.setInterval(autoScroll, 2000);
+var lastScrollHeight = 0;
+function autoScroll() {
+    var sh = document.body.scrollHeight;
+    if (sh != lastScrollHeight) {
+        lastScrollHeight = sh;
+        window.scrollTo(0, sh);
+    } else {
+        clearInterval(sc);
+        M_StopWaiting();
+    }
+} 

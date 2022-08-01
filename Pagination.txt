@@ -1,0 +1,17 @@
+// Insert the last page
+var numberResults = Number("%NumberResults%");
+//var lastPage= Number('%LastPage%');
+var lastPage = Math.ceil(numberResults / 60);
+var pageURLs = [];
+var categoryURL = 'https://www.vegasmeansbusiness.com/planning-tools/convention-calendar/?skip=';
+for (var i = 0; i < lastPage; i++) {
+
+   var pageNumber = i+1;
+   pageURL = categoryURL + `${pageNumber}&sort=startDate&startDate=03/08/2021&endDate=03/08/2022`;
+
+   //console.log(pageURL);
+   pageURLs.push({ 'PageURL': pageURL, 'PageNumber': pageNumber, 'Clean': 'Clean' });
+}
+
+M_SetFieldValues(pageURLs, true);
+M_StopWaiting();

@@ -1,0 +1,3 @@
+var domparser= new DOMParser();
+const doc = domparser.parseFromString(x, "text/html");
+document.body=doc.body

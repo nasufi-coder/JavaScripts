@@ -1,0 +1,24 @@
+//var specs = document.querySelectorAll(`#panel1 ul:not(:last-of-type) li`);
+
+var headings = document.evaluate(`//div[@class="accordion-contents "]//h4[.="CARE AND MAINTENANCE"][./preceding-sibling::h4[.="DIMENSIONS"]]/preceding-sibling::ul/li | //div[@class="dream-pip-dimensions-tab active"]/ul/li`, document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+var specifications = [];
+//var headings = document.evaluate("/html/body//h2", document, null, XPathResult.ANY_TYPE, null);
+/* Search the document for all h2 elements.
+ * The result will likely be an unordered node iterator. */
+var thisHeading = headings.iterateNext();
+while (thisHeading) {
+    specifications.push(`${thisHeading.innerText}`);
+    thisHeading = headings.iterateNext();
+}
+
+/*
+for (i = 0; i < specs.length; i++){   
+    
+    specifications.push(`${specs[i].innerText}`);
+    
+    console.log(specifications);
+}*/
+var div = document.createElement('div');
+div.id = 'contenti';
+div.innerText = '{"'+specifications+'"}';
+document.body.appendChild(div);
