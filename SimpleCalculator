@@ -1,0 +1,71 @@
+function getResult(equation) {
+    var numbers = equation.match(/\d+/g);
+    var operator = equation.match(/\D+/g);
+
+    var finalArrays = getMulDiv(numbers,operator);
+    var result = getSumDiff(finalArrays.finalOperators, finalArrays.finalNumbers)
+    console.log(result);
+}
+
+
+
+
+function getMulDiv(numbers,operator){
+    var finalNumbers = [];
+    var finalOperators = [];
+
+    var repeatedResult;
+
+    for (var i = 0; i < operator.length; i++) {
+
+
+
+        if (operator[i] == "+" || operator[i] == "-") {
+            finalNumbers.push(Number(numbers[i]));
+            finalOperators.push(operator[i]);
+        } else if (operator[i] == "*" || operator[i] == "/") {
+            repeatedResult = Number(numbers[i]);
+
+
+            do {
+                if (operator[i] == "*") {
+                    repeatedResult *= Number(numbers[i + 1])
+                } else if (operator[i] == "/") {
+                    repeatedResult /= Number(numbers[i + 1])
+                }
+                i += 1;
+            }
+            while (operator[i] == "*" || operator[i] == "/");
+            finalNumbers.push(repeatedResult);
+            finalOperators.push(operator[i]);
+        }
+    }
+
+    return {
+        "finalNumbers": finalNumbers,
+        "finalOperators": finalOperators
+    }
+}
+
+
+function getSumDiff(finalOperators, finalNumbers) {
+
+
+
+    var result = Number(finalNumbers[0]);
+    for (var i = 0; i < finalOperators.length; i++) {
+
+
+
+        if (finalOperators[i] == "+") {
+            result += Number(finalNumbers[i + 1]);
+
+        }
+        if (finalOperators[i] == "-") {
+            result -= Number(finalNumbers[i + 1]);
+
+        }
+
+    }
+    return result;
+}
